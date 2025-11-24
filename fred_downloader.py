@@ -53,8 +53,13 @@ def get_datasets(driver):
 def choose_dataset(datasets):
     for i, item in enumerate(datasets, start=1):
         print(f"{i}: {item}")
-    choice = input("Please pick a numerical indicator to extract said dataset: ")
-    return datasets[int(choice) - 1]
+    while True:
+        choice = input("Please pick a numerical indicator to extract said dataset: ")
+        if choice.isdigit():
+            choice = int(choice)
+            if 1 <= choice <= 50:
+                return datasets[int(choice) - 1]
+        print("Invalid choice. please enter a number between 1 and 50.")
 
 
 def download_dataset(driver, wait, chosen_dataset):
