@@ -1,11 +1,12 @@
 # FRED Banking Data Downloader (Selenium Automation)
 
-This Python script automates the extraction and download of datasets from the Banking section of the Federal Reserve Economic Data (FRED) website. It uses Selenium to navigate the site, list available datasets, prompt the user for a selection, and download the chosen series.
+This Python script automates the extraction and download of datasets from the Banking section of the Federal Reserve Economic Data (FRED) website. It uses Selenium to navigate the site (in full or headless mode), list available datasets, prompt the user for a selection, and download the chosen series.
 
 --------------------------------------------------
 ## Features
 
 - Automated navigation through FRED using Selenium.
+- Runs optionally in **headless mode** (Chrome without a visible window).
 - Scrapes all available Banking datasets using BeautifulSoup.
 - Displays datasets with numbered options in the terminal.
 - Prompts the user to choose a dataset by number.
@@ -42,7 +43,10 @@ The script will create the downloads directory if it does not exist.
 
 1. Driver Setup  
    - setup_driver(download_path) creates a Chrome WebDriver configured to save files into download_path.
-   - It sets Chrome preferences so downloads happen without prompts.
+   - It configures Chrome download preferences to avoid prompts.
+   - It adds the argument:
+       --headless=new  
+     so Chrome can run without opening a visible window.
 
 2. Navigation  
    - navigate_to_banking(driver, wait) opens https://fred.stlouisfed.org/ and clicks through:
@@ -61,11 +65,11 @@ The script will create the downloads directory if it does not exist.
    - It returns the chosen dataset name.
 
 5. Download  
-   - download_dataset(driver, wait, chosen_dataset) finds the link matching the chosen dataset text.
-   - It clicks the series, waits for the download button, then clicks:
+   - download_dataset(driver, wait, chosen_dataset) opens the chosen dataset page.
+   - It waits for the download buttons and clicks:
      - The main download button
      - The "download-data" button for the dataset file
-   - It sleeps for a short period to allow the file to finish downloading.
+   - It waits briefly to ensure the file finishes downloading.
 
 6. Cleanup  
    - main() ensures the WebDriver is closed in a finally block, even if an error occurs.
@@ -78,46 +82,48 @@ The script will create the downloads directory if it does not exist.
 
    download_path = "/Users/jesserai/PycharmProjects/Monk/Projects/Prtfolio/52/3_FED_Selenium/downloads"
 
-   to a valid path on your system if needed.
+   if needed.
 
-2. Run the script from the command line:
+2. Run the script:
 
    python fred_downloader.py
 
-3. Follow the prompt. Example interaction:
+3. Follow the on-screen prompt. Example:
 
-   1: Assets: Total Assets
-   2: Deposits: Commercial Banks
-   3: Loans: Real Estate Loans
-   ...
+   1: Assets: Total Assets  
+   2: Deposits: Commercial Banks  
+   3: Loans: Real Estate Loans  
+   ...  
    Please pick a numerical indicator to extract said dataset:
 
-4. Enter the number of the dataset you want. The corresponding file will be downloaded into the downloads directory.
+4. Enter the number of the dataset you want.  
+   The file will download into the downloads directory while Chrome runs headlessly.
 
 --------------------------------------------------
 ## Function Summary
 
 - setup_driver(download_path)  
-  Sets up Chrome with a custom download directory and returns (driver, wait).
+  Sets up Chrome in headless mode with a specified download directory. Returns (driver, wait).
 
 - navigate_to_banking(driver, wait)  
   Navigates from the FRED homepage to the Banking section.
 
 - get_datasets(driver)  
-  Scrapes the list of dataset titles from the Banking page and returns them as a list of strings.
+  Scrapes and returns the dataset names.
 
 - choose_dataset(datasets)  
-  Prints the dataset list, prompts for numeric input, and returns the selected dataset name.
+  Displays the numbered dataset list and returns the user’s selection.
 
 - download_dataset(driver, wait, chosen_dataset)  
-  Opens the chosen dataset’s page and triggers the download via FRED’s download buttons.
+  Opens the dataset page and triggers the Excel download.
 
 - main()  
-  Orchestrates the workflow: sets up the driver, navigates, scrapes, prompts, downloads, and finally closes the browser.
+  Orchestrates all steps and safely closes the browser.
 
 --------------------------------------------------
 ## Notes and Limitations
 
-- The script assumes FRED’s HTML structure (classes, link texts, and element IDs) remains the same. If the site layout changes, selectors may need updating.
-- The time.sleep(10) call is a simple way to wait for download completion; for production use, consider checking the downloads folder until the file appears.
+- Some websites behave differently in headless mode; if FRED changes visibility rules or layout, selectors may need updating.
+- time.sleep(10) is a simple wait; a more robust approach would monitor the downloads directory for file completion.
+
 
