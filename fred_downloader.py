@@ -16,6 +16,9 @@ def setup_driver(download_path):
         "download.directory_upgrade": True
     }
     options.add_experimental_option("prefs", prefs)
+    options.add_argument("--headless=new")  # Run Chrome headless
+    options.add_argument("--disable-gpu")  # Safe fallback on some systems
+    options.add_argument("--window-size=1920,1080")  # Ensure pages render correctly
 
     driver = webdriver.Chrome(options=options)
     wait = WebDriverWait(driver, 10)
@@ -60,7 +63,6 @@ def choose_dataset(datasets):
             if 1 <= choice <= 50:
                 return datasets[int(choice) - 1]
         print("Invalid choice. please enter a number between 1 and 50.")
-
 
 def download_dataset(driver, wait, chosen_dataset):
     link = wait.until(
