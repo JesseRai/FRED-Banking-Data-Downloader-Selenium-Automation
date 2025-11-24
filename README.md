@@ -119,6 +119,5 @@ The script will create the downloads directory if it does not exist.
 ## Notes and Limitations
 
 - The script assumes FRED’s HTML structure (classes, link texts, and element IDs) remains the same. If the site layout changes, selectors may need updating.
-- User input is minimally validated; entering a non-numeric or out-of-range choice will cause an error.
 - The time.sleep(10) call is a simple way to wait for download completion; for production use, consider checking the downloads folder until the file appears.
 
